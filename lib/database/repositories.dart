@@ -30,6 +30,18 @@ abstract class Repository<T extends DBEntity> {
     return json;
   }
 
+  /// Возвращает список объектов формата "ключ": "значение"
+  ///
+  Future<List<Map<String, Object?>>> _getAllStrings() async {
+    final Database db = await DBProvider.db.database;
+
+    List<Map<String, Object?>> table = await db.rawQuery(
+        "SELECT * FROM $_tableName;"
+    );
+
+    return table;
+  }
+
   /// Добавляет запись в таблицу _tableName по предоставленной
   /// сущности типа <T>
   ///
@@ -47,6 +59,7 @@ abstract class Repository<T extends DBEntity> {
   }
 
   Future<DBEntity> getById(int id);
+  Future<List<DBEntity>> getAll();
 }
 
 /// Класс для работы с таблицей "Employees"
@@ -62,6 +75,17 @@ class EmployeeRepository extends Repository<Employee> {
 
     return Employee.fromMap(json);
   }
+
+  Future<List<Employee>> getAll() async {
+    final List<Map<String, Object?>> jsonList = await _getAllStrings();
+    List<Employee> employeeList = <Employee>[];
+
+    jsonList.forEach((element) {
+      employeeList.add(Employee.fromMap(element));
+    });
+
+    return employeeList;
+  }
 }
 
 /// Класс для работы с таблицей "Children"
@@ -76,6 +100,17 @@ class ChildRepository extends Repository<Child> {
     Map<String, Object?> json = await _getFromDbById(id);
 
     return Child.fromMap(json);
+  }
+
+  Future<List<Child>> getAll() async {
+    final List<Map<String, Object?>> jsonList = await _getAllStrings();
+    List<Child> childList = <Child>[];
+
+    jsonList.forEach((element) {
+      childList.add(Child.fromMap(element));
+    });
+
+    return childList;
   }
 }
 
