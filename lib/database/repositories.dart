@@ -15,6 +15,18 @@ abstract class Repository<T extends DBEntity> {
 
   String get _tableName => table.name;
 
+  Future<void> dropTable() async {
+    final Database db = await DBProvider.db.database;
+
+    await db.execute('DROP TABLE $_tableName;');
+  }
+
+  Future<void> clearTable() async {
+    final Database db = await DBProvider.db.database;
+
+    await db.delete(_tableName);
+  }
+
   /// Возвращает объект формата "ключ": "значение" с информацией о строке
   /// таблицы по значению поля id
   ///
@@ -45,7 +57,7 @@ abstract class Repository<T extends DBEntity> {
   /// Добавляет запись в таблицу _tableName по предоставленной
   /// сущности типа <T>
   ///
-  Future<bool> addToDB(T entity) async {
+  Future<int> addToDB(T entity) async {
     final Database db = await DBProvider.db.database;
     List<Map<String, Object?>> table = await db.rawQuery("SELECT MAX(id)+1 as id FROM $_tableName");
 
@@ -55,7 +67,7 @@ abstract class Repository<T extends DBEntity> {
 
     int res = await db.insert(_tableName, entity.toMap());
 
-    return res == 1;
+    return res;
   }
 
   Future<DBEntity> getById(int id);
@@ -85,6 +97,23 @@ class EmployeeRepository extends Repository<Employee> {
     });
 
     return employeeList;
+  }
+
+  Future<void> fillTable() async {
+    final Database db = await DBProvider.db.database;
+
+    for (int i = 0; i < 10; i++) {
+      Map<String, Object?> employeeMap = Employee(
+        name: 'Name ' + i.toString(),
+        lastName: 'LastName ' + i.toString(),
+        secondName: 'SecondName ' + i.toString(),
+        age: i,
+        position: 'Position ' + i.toString()
+      ).toMap();
+
+      await db.insert(_tableName, employeeMap);
+    }
+
   }
 }
 

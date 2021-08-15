@@ -9,29 +9,6 @@ class EmployeeListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(),
       body: EmployeeListScreenBody(),
-      bottomSheet: BottomSheet(
-        onClosing: () {},
-        builder: (context) {
-          return Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                  },
-                  child: Icon(Icons.add),
-                ),
-                FloatingActionButton(
-                  onPressed: () {
-                  },
-                  child: Icon(Icons.title),
-                )
-              ],
-            )
-          );
-        },
-      ),
     );
   }
 }

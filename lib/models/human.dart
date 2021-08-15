@@ -61,7 +61,8 @@ class Employee extends Human {
       "last_name": lastName,
       "name": name,
       "second_name": secondName,
-      "position": position
+      "position": position,
+      "age": age
     };
   }
 }
